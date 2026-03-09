@@ -161,6 +161,39 @@ p {
   min-width: 132px;
 }
 
+.music-toggle {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 40;
+  border: 1px solid rgba(255, 120, 103, 0.35);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #7b3e4a;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 18px rgba(93, 57, 66, 0.14);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.music-toggle:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(93, 57, 66, 0.2);
+}
+
+.music-toggle.is-on {
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  border-color: transparent;
+}
+
+.music-toggle:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .floating-layer {
   position: fixed;
   inset: 0;
@@ -228,5 +261,12 @@ p {
 
   .link-row .btn {
     width: 100%;
+  }
+
+  .music-toggle {
+    left: 12px;
+    bottom: 12px;
+    font-size: 0.82rem;
+    padding: 9px 12px;
   }
 }

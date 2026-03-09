@@ -1,5 +1,15 @@
 (function () {
   const RECIPIENT_KEY = "birthday_greetings_recipient";
+  const MUSIC_PREF_KEY = "birthday_greetings_music_enabled";
+  const MUSIC_SRC = "assets/audio/invisible-string-instrumental.mp3";
+
+  let musicEnabled = window.localStorage.getItem(MUSIC_PREF_KEY) === "on";
+  let musicAudio = null;
+  let musicButton = null;
+  let musicReady = false;
+  let musicTempPauseDepth = 0;
+  let shouldResumeAfterTempPause = false;
+  let waitingForInteraction = false;
 
   function randomBetween(min, max) {
     return Math.random() * (max - min) + min;
@@ -100,12 +110,152 @@
       .replace(/^-+|-+$/g, "") || "birthday-star";
   }
 
+  function updateMusicButton() {
+    if (!musicButton) {
+      return;
+    }
+
+    if (!musicReady) {
+      musicButton.textContent = "Music unavailable";
+      musicButton.disabled = true;
+      musicButton.classList.remove("is-on");
+      musicButton.setAttribute("aria-label", "Background music unavailable");
+      return;
+    }
+
+    const label = musicEnabled ? "Music: On" : "Music: Off";
+    musicButton.textContent = label;
+    musicButton.disabled = false;
+    musicButton.classList.toggle("is-on", musicEnabled);
+    musicButton.setAttribute("aria-label", label);
+  }
+
+  function rememberMusicPreference() {
+    window.localStorage.setItem(MUSIC_PREF_KEY, musicEnabled ? "on" : "off");
+  }
+
+  function tryPlayMusic() {
+    if (!musicAudio || !musicEnabled || musicTempPauseDepth > 0) {
+      return;
+    }
+
+    const playAttempt = musicAudio.play();
+    if (playAttempt && typeof playAttempt.catch === "function") {
+      playAttempt.catch(() => {
+        if (!waitingForInteraction) {
+          waitingForInteraction = true;
+          const resume = () => {
+            waitingForInteraction = false;
+            window.removeEventListener("pointerdown", resume);
+            window.removeEventListener("keydown", resume);
+            tryPlayMusic();
+          };
+          window.addEventListener("pointerdown", resume, { once: true });
+          window.addEventListener("keydown", resume, { once: true });
+        }
+      });
+    }
+  }
+
+  function setMusicEnabled(value) {
+    musicEnabled = value;
+    rememberMusicPreference();
+
+    if (!musicAudio) {
+      return;
+    }
+
+    if (!musicEnabled) {
+      musicAudio.pause();
+    } else {
+      tryPlayMusic();
+    }
+
+    updateMusicButton();
+  }
+
+  function toggleMusic() {
+    setMusicEnabled(!musicEnabled);
+  }
+
+  function pauseMusicForVoiceNote() {
+    if (!musicAudio || !musicReady) {
+      return false;
+    }
+
+    musicTempPauseDepth += 1;
+    if (musicTempPauseDepth === 1) {
+      shouldResumeAfterTempPause = !musicAudio.paused;
+      if (!musicAudio.paused) {
+        musicAudio.pause();
+      }
+    }
+    return true;
+  }
+
+  function resumeMusicAfterVoiceNote() {
+    if (!musicAudio || !musicReady || musicTempPauseDepth === 0) {
+      return;
+    }
+
+    musicTempPauseDepth -= 1;
+    if (musicTempPauseDepth === 0) {
+      if (musicEnabled && shouldResumeAfterTempPause) {
+        tryPlayMusic();
+      }
+      shouldResumeAfterTempPause = false;
+    }
+  }
+
+  function mountMusicControls() {
+    if (document.querySelector(".music-toggle")) {
+      return;
+    }
+
+    musicAudio = document.createElement("audio");
+    musicAudio.src = MUSIC_SRC;
+    musicAudio.loop = true;
+    musicAudio.preload = "metadata";
+    musicAudio.setAttribute("aria-hidden", "true");
+
+    musicButton = document.createElement("button");
+    musicButton.type = "button";
+    musicButton.className = "music-toggle";
+    musicButton.addEventListener("click", toggleMusic);
+
+    document.body.appendChild(musicAudio);
+    document.body.appendChild(musicButton);
+
+    musicAudio.addEventListener("canplaythrough", () => {
+      musicReady = true;
+      updateMusicButton();
+      if (musicEnabled) {
+        tryPlayMusic();
+      }
+    });
+
+    musicAudio.addEventListener("error", () => {
+      musicReady = false;
+      updateMusicButton();
+    });
+
+    updateMusicButton();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mountMusicControls);
+  } else {
+    mountMusicControls();
+  }
+
   window.BirthdayApp = {
     burstConfetti,
     createFloatingLayer,
     createFileSlug,
     getRecipientName,
     navigate,
+    pauseMusicForVoiceNote,
+    resumeMusicAfterVoiceNote,
     sanitizeName,
     setRecipientName
   };

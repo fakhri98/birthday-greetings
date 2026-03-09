@@ -27,8 +27,11 @@ Because this is a static site, you can open `index.html` directly in a browser.
 ## Customize
 
 - Replace placeholder memory images in `assets/memories/`.
+- Add your background song file at:
+  - `assets/audio/invisible-string-instrumental.mp3`
 - Edit text content in:
   - `scripts/memory-lane.js`
   - `scripts/letter.js`
 - Adjust colors and fonts in `styles/base.css`.
 - Personalization name is stored in localStorage key: `birthday_greetings_recipient`.
+- Music mute/unmute preference is stored in localStorage key: `birthday_greetings_music_enabled`.

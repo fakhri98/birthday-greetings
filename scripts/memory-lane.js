@@ -50,7 +50,13 @@ const memories = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  const { createFloatingLayer, getRecipientName, navigate } = window.BirthdayApp;
+  const {
+    createFloatingLayer,
+    getRecipientName,
+    navigate,
+    pauseMusicForVoiceNote,
+    resumeMusicAfterVoiceNote
+  } = window.BirthdayApp;
   const recipientName = getRecipientName("Birthday Star");
 
   createFloatingLayer({
@@ -74,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
   let intervalId = null;
   let activeVoiceButton = null;
-  let activeUtterance = null;
+  let pausedMusicForVoice = false;
 
   function withName(text) {
     return text.replaceAll("{name}", recipientName);
@@ -121,15 +127,31 @@ document.addEventListener("DOMContentLoaded", () => {
     updateActiveCard(index);
     const target = cards[currentIndex];
     const leftPosition = target.offsetLeft - (track.clientWidth - target.clientWidth) / 2;
-    track.scrollTo({ left: leftPosition, behavior: "smooth" });
+    const clampedLeft = Math.max(0, leftPosition);
+
+    if (typeof track.scrollTo === "function") {
+      try {
+        track.scrollTo({ left: clampedLeft, behavior: "smooth" });
+        return;
+      } catch (error) {
+        // Fallback for browsers that don't support ScrollToOptions on elements.
+      }
+    }
+
+    track.scrollLeft = clampedLeft;
   }
 
   function startSlideshow() {
     if (intervalId) {
       return;
     }
+    if (cards.length <= 1) {
+      return;
+    }
+
     autoPlayButton.classList.add("hidden");
     pausePlayButton.classList.remove("hidden");
+    scrollToCard(currentIndex + 1);
     intervalId = window.setInterval(() => {
       scrollToCard(currentIndex + 1);
     }, 2200);
@@ -150,11 +172,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.speechSynthesis.cancel();
+    if (pausedMusicForVoice) {
+      resumeMusicAfterVoiceNote();
+      pausedMusicForVoice = false;
+    }
+
     if (activeVoiceButton) {
       activeVoiceButton.textContent = "Play Voice Note";
       activeVoiceButton.classList.remove("is-speaking");
       activeVoiceButton = null;
-      activeUtterance = null;
     }
   }
 
@@ -180,13 +206,16 @@ document.addEventListener("DOMContentLoaded", () => {
         button.textContent = "Play Voice Note";
         button.classList.remove("is-speaking");
         voiceStatus.textContent = "Tap any card to play another personal voice note.";
+        if (pausedMusicForVoice) {
+          resumeMusicAfterVoiceNote();
+          pausedMusicForVoice = false;
+        }
         activeVoiceButton = null;
-        activeUtterance = null;
       }
     };
 
     activeVoiceButton = button;
-    activeUtterance = utterance;
+    pausedMusicForVoice = pauseMusicForVoiceNote();
     button.textContent = "Stop Voice Note";
     button.classList.add("is-speaking");
     voiceStatus.textContent = `Playing note from "${memories[index].title}".`;
