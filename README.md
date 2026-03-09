@@ -5,9 +5,9 @@ A 4-page romantic birthday website inspired by the YouTube tutorial you shared.
 ## Pages
 
 - `index.html` - welcome page
-- `memory-lane.html` - memory slideshow/cards + voice-note playback
+- `memory-lane.html` - memory slideshow/cards + voice-note playback + memory quiz
 - `cake.html` - interactive candle blow-out cake + microphone blow detection
-- `letter.html` - typewriter letter + final playlist modal + keepsake image download
+- `letter.html` - typewriter letter + ending choice + polaroid booth + keepsake download
 
 ## Run Locally
 
@@ -36,3 +36,4 @@ Because this is a static site, you can open `index.html` directly in a browser.
 - Adjust colors and fonts in `styles/base.css`.
 - Personalization name is stored in localStorage key: `birthday_greetings_recipient`.
 - Music mute/unmute preference is stored in localStorage key: `birthday_greetings_music_enabled`.
+- Hidden easter eggs are page-specific and configured in each page script.

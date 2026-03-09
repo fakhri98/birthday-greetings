@@ -51,13 +51,29 @@ function wrapParagraph(ctx, paragraph, maxWidth) {
 function wrapMultilineText(ctx, text, maxWidth) {
   const paragraphs = text.split("\n");
   const result = [];
-  paragraphs.forEach((paragraph, index) => {
-    result.push(...wrapParagraph(ctx, paragraph, maxWidth));
-    if (index < paragraphs.length - 1) {
+  paragraphs.forEach((paragraph) => {
+    if (paragraph.trim() === "") {
       result.push("");
+      return;
     }
+    result.push(...wrapParagraph(ctx, paragraph, maxWidth));
   });
+  while (result.length > 0 && result[result.length - 1] === "") {
+    result.pop();
+  }
   return result;
+}
+
+function drawContainImage(ctx, imageCanvas, x, y, width, height) {
+  const scale = Math.min(width / imageCanvas.width, height / imageCanvas.height);
+  const drawWidth = imageCanvas.width * scale;
+  const drawHeight = imageCanvas.height * scale;
+  const drawX = x + (width - drawWidth) / 2;
+  const drawY = y + (height - drawHeight) / 2;
+
+  ctx.fillStyle = "#f8f4ee";
+  ctx.fillRect(x, y, width, height);
+  ctx.drawImage(imageCanvas, drawX, drawY, drawWidth, drawHeight);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -66,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createFileSlug,
     createFloatingLayer,
     getRecipientName,
+    initEasterEggs,
     navigate
   } = window.BirthdayApp;
   const recipientName = getRecipientName("Birthday Star");
@@ -75,6 +92,17 @@ document.addEventListener("DOMContentLoaded", () => {
     count: 28,
     symbols: ["&#10084;", "&#10024;", "&#9679;"],
     colors: ["#ff8a72", "#ffd166", "#9adbc4", "#f2acd6"]
+  });
+
+  initEasterEggs({
+    count: 4,
+    symbols: ["\u2605", "\u2665"],
+    messages: [
+      "Easter egg: You are still the best chapter in my story.",
+      "Easter egg: This page exists because you are worth the effort.",
+      "Easter egg: I replay our funniest moments way too often.",
+      `Easter egg: ${recipientName}, thank you for being you.`
+    ]
   });
 
   const heading = document.getElementById("letterHeading");
@@ -88,6 +116,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const playlistList = document.getElementById("playlist");
   const backCakeButton = document.getElementById("backCake");
   const restartButton = document.getElementById("restart");
+  const endingButtons = Array.from(document.querySelectorAll(".ending-btn"));
+  const endingMessage = document.getElementById("endingMessage");
+  const capturePolaroidButton = document.getElementById("capturePolaroid");
+  const downloadPolaroidLink = document.getElementById("downloadPolaroid");
+  const polaroidStatus = document.getElementById("polaroidStatus");
+  const polaroidPreview = document.getElementById("polaroidPreview");
+  const polaroidImage = document.getElementById("polaroidImage");
+
+  const endingMessages = {
+    romantic: `${recipientName}, every little thing feels better with you in my life.`,
+    funny: `Final verdict: ${recipientName}, you are 73% chaos, 27% sweetness, and 100% my favorite person.`,
+    nostalgic: `From old memories to new adventures, ${recipientName}, I would choose this story with you every time.`
+  };
 
   heading.textContent = `A Note Just For ${recipientName}`;
   finalTitle.textContent = `${recipientName}'s Playlist Gift`;
@@ -127,9 +168,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buildKeepsakeCanvas() {
+    const width = 1400;
+    const minHeight = 1800;
+    const cardX = 90;
+    const cardY = 270;
+    const cardWidth = 1220;
+    const textX = 140;
+    const textStartY = 350;
+    const lineHeight = 52;
+    const cardBottomPadding = 96;
+    const footerGap = 74;
+    const footerBottomPadding = 92;
+
+    const measureCanvas = document.createElement("canvas");
+    const measureCtx = measureCanvas.getContext("2d");
+    measureCtx.font = "600 38px Nunito, Arial, sans-serif";
+    const maxWidth = 1120;
+    const lines = wrapMultilineText(measureCtx, typedLetter.textContent, maxWidth);
+    const textHeight = Math.max(1, lines.length) * lineHeight;
+    const neededCardHeight = Math.max(1330, textStartY - cardY + textHeight + cardBottomPadding);
+    const footerY = cardY + neededCardHeight + footerGap;
+    const height = Math.max(minHeight, footerY + footerBottomPadding);
+
     const canvas = document.createElement("canvas");
-    canvas.width = 1400;
-    canvas.height = 1800;
+    canvas.width = width;
+    canvas.height = height;
     const ctx = canvas.getContext("2d");
 
     const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -146,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.fillStyle = "rgba(141, 217, 183, 0.24)";
     ctx.beginPath();
-    ctx.arc(220, 1600, 210, 0, Math.PI * 2);
+    ctx.arc(220, canvas.height - 200, 210, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = "#5a2f39";
@@ -163,30 +226,111 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillText(dateLabel, 110, 225);
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.fillRect(90, 270, 1220, 1330);
+    ctx.fillRect(cardX, cardY, cardWidth, neededCardHeight);
     ctx.strokeStyle = "rgba(255, 165, 145, 0.5)";
     ctx.lineWidth = 3;
-    ctx.strokeRect(90, 270, 1220, 1330);
+    ctx.strokeRect(cardX, cardY, cardWidth, neededCardHeight);
 
     ctx.font = "600 38px Nunito, Arial, sans-serif";
     ctx.fillStyle = "#4f3640";
-
-    const maxWidth = 1120;
-    const lines = wrapMultilineText(ctx, typedLetter.textContent, maxWidth);
-    let y = 350;
-    const lineHeight = 52;
+    let y = textStartY;
     lines.forEach((line) => {
       if (line) {
-        ctx.fillText(line, 140, y);
+        ctx.fillText(line, textX, y);
       }
       y += lineHeight;
     });
 
     ctx.font = "700 30px Nunito, Arial, sans-serif";
     ctx.fillStyle = "#7f555f";
-    ctx.fillText("Made with love", 140, 1680);
+    ctx.fillText("Made with love", textX, footerY);
 
     return canvas;
+  }
+
+  function setEnding(type) {
+    endingButtons.forEach((button) => {
+      button.classList.toggle("is-selected", button.dataset.ending === type);
+    });
+    endingMessage.textContent = endingMessages[type] || "Pick one to reveal your custom ending message.";
+    burstConfetti({ count: 30, x: 62, y: 55 });
+  }
+
+  async function capturePolaroid() {
+    if (typeof window.html2canvas !== "function") {
+      polaroidStatus.textContent = "Polaroid capture unavailable: screenshot library failed to load.";
+      return;
+    }
+
+    polaroidStatus.textContent = "Capturing your polaroid...";
+    capturePolaroidButton.disabled = true;
+
+    try {
+      const target = finalModal.classList.contains("show")
+        ? finalModal.querySelector(".final-card")
+        : document.querySelector("main.page-shell");
+
+      const shot = await window.html2canvas(target, {
+        backgroundColor: "#fff8f2",
+        scale: 2,
+        useCORS: true,
+        onclone: (doc) => {
+          const clonedCard = doc.querySelector(".final-card");
+          if (clonedCard) {
+            clonedCard.style.maxHeight = "none";
+            clonedCard.style.overflow = "visible";
+            clonedCard.style.height = "auto";
+            clonedCard.scrollTop = 0;
+          }
+
+          const clonedPreview = doc.getElementById("polaroidPreview");
+          if (clonedPreview) {
+            clonedPreview.style.display = "none";
+          }
+        }
+      });
+
+      const polaroidCanvas = document.createElement("canvas");
+      polaroidCanvas.width = 1080;
+      polaroidCanvas.height = 1320;
+      const ctx = polaroidCanvas.getContext("2d");
+
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, polaroidCanvas.width, polaroidCanvas.height);
+
+      ctx.fillStyle = "#f9f6ef";
+      ctx.fillRect(65, 65, 950, 900);
+      drawContainImage(ctx, shot, 90, 90, 900, 850);
+
+      ctx.fillStyle = "#5c3945";
+      ctx.font = "700 44px Fraunces, Georgia, serif";
+      ctx.fillText(`${recipientName}'s Night`, 90, 1065);
+      ctx.font = "600 32px Nunito, Arial, sans-serif";
+      const dateLabel = new Date().toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+      ctx.fillText(dateLabel, 90, 1110);
+
+      ctx.fillStyle = "rgba(255, 133, 112, 0.16)";
+      ctx.beginPath();
+      ctx.arc(980, 1180, 130, 0, Math.PI * 2);
+      ctx.fill();
+
+      const dataUrl = polaroidCanvas.toDataURL("image/png");
+      polaroidImage.src = dataUrl;
+      polaroidPreview.classList.remove("hidden");
+      downloadPolaroidLink.href = dataUrl;
+      downloadPolaroidLink.download = `${createFileSlug(recipientName)}-polaroid.png`;
+      downloadPolaroidLink.classList.remove("hidden");
+      polaroidStatus.textContent = "Polaroid ready. Download it below.";
+      burstConfetti({ count: 70, x: 65, y: 60 });
+    } catch (error) {
+      polaroidStatus.textContent = "Could not capture screenshot. Try again after opening final modal.";
+    } finally {
+      capturePolaroidButton.disabled = false;
+    }
   }
 
   openFinalButton.addEventListener("click", () => {
@@ -199,6 +343,14 @@ document.addEventListener("DOMContentLoaded", () => {
     finalModal.classList.remove("show");
     finalModal.setAttribute("aria-hidden", "true");
   });
+
+  endingButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setEnding(button.dataset.ending);
+    });
+  });
+
+  capturePolaroidButton.addEventListener("click", capturePolaroid);
 
   downloadKeepsakeButton.addEventListener("click", () => {
     const canvas = buildKeepsakeCanvas();

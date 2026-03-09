@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const { burstConfetti, createFloatingLayer, getRecipientName, navigate } = window.BirthdayApp;
+  const { burstConfetti, createFloatingLayer, getRecipientName, initEasterEggs, navigate } = window.BirthdayApp;
   const recipientName = getRecipientName("Birthday Star");
 
   createFloatingLayer({
@@ -8,6 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
     colors: ["#ffd166", "#ff9f68", "#9adbc4", "#f4b6de"],
     minSize: 10,
     maxSize: 22
+  });
+
+  initEasterEggs({
+    count: 3,
+    symbols: ["\u2605", "\u2665"],
+    messages: [
+      "Cake secret: You can still blow candles by pressing B.",
+      "Cake secret: Mic mode works best when close to the microphone.",
+      `Cake secret: Happy birthday again, ${recipientName}.`
+    ]
   });
 
   const heading = document.getElementById("cakeHeading");

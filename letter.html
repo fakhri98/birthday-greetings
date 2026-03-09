@@ -35,10 +35,34 @@
       <h2 id="finalTitle">Your Playlist Gift</h2>
       <p>Pick a track and dedicate it with your own message.</p>
       <ul id="playlist" class="playlist"></ul>
+
+      <section class="ending-choice">
+        <h3>Choose Your Ending Vibe</h3>
+        <div class="ending-options">
+          <button type="button" class="btn secondary ending-btn" data-ending="romantic">Romantic</button>
+          <button type="button" class="btn secondary ending-btn" data-ending="funny">Funny</button>
+          <button type="button" class="btn secondary ending-btn" data-ending="nostalgic">Nostalgic</button>
+        </div>
+        <p id="endingMessage" class="ending-message">Pick one to reveal your custom ending message.</p>
+      </section>
+
+      <section class="polaroid-booth">
+        <h3>Polaroid Booth</h3>
+        <p class="booth-subtitle">Capture this final screen with your name and today’s date.</p>
+        <div class="booth-actions">
+          <button id="capturePolaroid" type="button" class="btn secondary">Take Polaroid</button>
+          <a id="downloadPolaroid" class="btn hidden" download>Download Polaroid</a>
+        </div>
+        <p id="polaroidStatus" class="polaroid-status">Click “Take Polaroid” to generate a keepsake shot.</p>
+        <figure id="polaroidPreview" class="polaroid-preview hidden">
+          <img id="polaroidImage" alt="Polaroid preview">
+        </figure>
+      </section>
     </div>
   </div>
 
   <script src="scripts/common.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="scripts/letter.js"></script>
 </body>
 </html>

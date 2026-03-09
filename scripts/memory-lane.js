@@ -49,10 +49,33 @@ const memories = [
   }
 ];
 
+const quizQuestions = [
+  {
+    question: "Which memory mentions a no-plan adventure?",
+    options: ["Movie Night", "Road Trip", "Little Wins"],
+    answerIndex: 1,
+    success: "Correct. Unlock 1: confetti burst activated."
+  },
+  {
+    question: "Where did we laugh until everyone stared?",
+    options: ["Cafe Story", "Rainy Day", "Sunset Walk"],
+    answerIndex: 0,
+    success: "Correct. Unlock 2: dreamy aurora overlay activated."
+  },
+  {
+    question: "What did she claim during movie night?",
+    options: ["All snacks", "Every good pillow", "The playlist remote"],
+    answerIndex: 1,
+    success: "Correct. Unlock 3: grand celebration mode activated."
+  }
+];
+
 document.addEventListener("DOMContentLoaded", () => {
   const {
+    burstConfetti,
     createFloatingLayer,
     getRecipientName,
+    initEasterEggs,
     navigate,
     pauseMusicForVoiceNote,
     resumeMusicAfterVoiceNote
@@ -65,6 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
     colors: ["#ff7f66", "#ffca7a", "#8dd9b7", "#e6abdc"]
   });
 
+  initEasterEggs({
+    count: 4,
+    symbols: ["\u2665", "\u2605"],
+    messages: [
+      "Secret 1: You looked amazing in that sunset light.",
+      "Secret 2: Cafe Story still makes me laugh randomly.",
+      "Secret 3: Road trip playlist was perfect because of you.",
+      `Secret 4: ${recipientName}, you are my favorite memory in every timeline.`
+    ]
+  });
+
   const heading = document.getElementById("memoryHeading");
   const track = document.getElementById("memoryTrack");
   const voiceStatus = document.getElementById("voiceStatus");
@@ -74,6 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextMemoryButton = document.getElementById("nextMemory");
   const backHomeButton = document.getElementById("backHome");
   const nextSceneButton = document.getElementById("nextScene");
+  const quizList = document.getElementById("quizList");
+  const quizProgress = document.getElementById("quizProgress");
 
   heading.textContent = `Memory Lane for ${recipientName}`;
 
@@ -81,6 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let intervalId = null;
   let activeVoiceButton = null;
   let pausedMusicForVoice = false;
+  let unlockedEffects = 0;
+  const solvedQuestions = new Set();
 
   function withName(text) {
     return text.replaceAll("{name}", recipientName);
@@ -142,10 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startSlideshow() {
-    if (intervalId) {
-      return;
-    }
-    if (cards.length <= 1) {
+    if (intervalId || cards.length <= 1) {
       return;
     }
 
@@ -222,6 +257,85 @@ document.addEventListener("DOMContentLoaded", () => {
     window.speechSynthesis.speak(utterance);
   }
 
+  function applyQuizEffect(level) {
+    if (level === 1) {
+      burstConfetti({ count: 80, x: 50, y: 40 });
+      voiceStatus.textContent = "Quiz Unlock 1: confetti celebration unlocked.";
+    } else if (level === 2) {
+      document.body.classList.add("memory-quiz-aurora");
+      voiceStatus.textContent = "Quiz Unlock 2: dreamy aurora overlay unlocked.";
+    } else if (level === 3) {
+      document.body.classList.add("memory-quiz-won");
+      burstConfetti({ count: 160, x: 50, y: 45 });
+      createFloatingLayer({
+        count: 20,
+        symbols: ["&#10024;", "&#10084;"],
+        colors: ["#ff7f66", "#ffd166", "#9adbc4", "#f2acd6"],
+        minDuration: 9,
+        maxDuration: 16
+      });
+      voiceStatus.textContent = `Quiz complete. ${recipientName}, every answer unlocked more sparkle.`;
+    }
+  }
+
+  function updateQuizProgress() {
+    quizProgress.textContent = `Unlocked effects: ${unlockedEffects} / 3`;
+  }
+
+  function lockQuestionOptions(container) {
+    const buttons = container.querySelectorAll(".quiz-option");
+    buttons.forEach((button) => {
+      button.disabled = true;
+    });
+  }
+
+  function renderQuiz() {
+    quizList.innerHTML = "";
+
+    quizQuestions.forEach((quiz, quizIndex) => {
+      const item = document.createElement("article");
+      item.className = "quiz-item";
+      item.innerHTML = `
+        <p class="quiz-question">${quizIndex + 1}. ${quiz.question}</p>
+        <div class="quiz-options"></div>
+        <p class="quiz-note" id="quizNote${quizIndex}">Choose an answer to unlock an effect.</p>
+      `;
+
+      const optionsWrap = item.querySelector(".quiz-options");
+      const note = item.querySelector(".quiz-note");
+
+      quiz.options.forEach((optionText, optionIndex) => {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "quiz-option";
+        option.textContent = optionText;
+
+        option.addEventListener("click", () => {
+          if (solvedQuestions.has(quizIndex)) {
+            return;
+          }
+
+          if (optionIndex === quiz.answerIndex) {
+            solvedQuestions.add(quizIndex);
+            unlockedEffects += 1;
+            option.classList.add("correct");
+            note.textContent = quiz.success;
+            lockQuestionOptions(item);
+            updateQuizProgress();
+            applyQuizEffect(unlockedEffects);
+          } else {
+            option.classList.add("wrong");
+            note.textContent = "Not this one. Try another answer.";
+          }
+        });
+
+        optionsWrap.appendChild(option);
+      });
+
+      quizList.appendChild(item);
+    });
+  }
+
   autoPlayButton.addEventListener("click", startSlideshow);
   pausePlayButton.addEventListener("click", pauseSlideshow);
   prevMemoryButton.addEventListener("click", () => {
@@ -256,5 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener("beforeunload", stopVoiceNote);
+  renderQuiz();
+  updateQuizProgress();
   scrollToCard(0);
 });

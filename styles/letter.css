@@ -67,6 +67,8 @@
   border-radius: 22px;
   padding: 24px;
   position: relative;
+  max-height: 88vh;
+  overflow-y: auto;
   box-shadow: 0 16px 36px rgba(66, 37, 40, 0.25);
 }
 
@@ -143,6 +145,73 @@
   background: #ffeede;
 }
 
+.ending-choice,
+.polaroid-booth {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 190, 167, 0.45);
+}
+
+.ending-choice h3,
+.polaroid-booth h3 {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+
+.ending-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ending-btn.is-selected {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #ff7f66, #ffbe74);
+}
+
+.ending-message {
+  margin: 0;
+  color: #6e5860;
+  font-size: 0.92rem;
+}
+
+.booth-subtitle {
+  color: #6e5860;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.booth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.polaroid-status {
+  margin: 0 0 8px;
+  color: #6e5860;
+  font-size: 0.88rem;
+}
+
+.polaroid-preview {
+  margin: 0;
+}
+
+.polaroid-preview img {
+  width: min(320px, 90%);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 190, 167, 0.55);
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(61, 35, 45, 0.2);
+}
+
+.polaroid-preview.hidden {
+  display: none;
+}
+
 @media (max-width: 760px) {
   .typed-letter {
     min-height: 330px;
@@ -160,5 +229,10 @@
 
   .playlist-number {
     margin-bottom: 4px;
+  }
+
+  .ending-options .btn,
+  .booth-actions .btn {
+    width: 100%;
   }
 }

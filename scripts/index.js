@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const {
     createFloatingLayer,
     getRecipientName,
+    initEasterEggs,
     navigate,
     sanitizeName,
     setRecipientName
@@ -13,6 +14,16 @@ document.addEventListener("DOMContentLoaded", () => {
     colors: ["#ff6f61", "#ffb347", "#9edfb2", "#ff9eb6"],
     minDuration: 14,
     maxDuration: 28
+  });
+
+  initEasterEggs({
+    count: 3,
+    symbols: ["\u2665", "\u2605"],
+    messages: [
+      "Secret: This whole site was made with love.",
+      "Secret: The best part of this surprise is your smile.",
+      "Secret: Press Enter in the name field for a quick start."
+    ]
   });
 
   const heading = document.getElementById("recipientHeading");

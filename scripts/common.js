@@ -37,6 +37,7 @@
   let musicTempPauseDepth = 0;
   let shouldResumeAfterTempPause = false;
   let waitingForInteraction = false;
+  let eggToastTimer = null;
 
   function randomBetween(min, max) {
     return Math.random() * (max - min) + min;
@@ -135,6 +136,86 @@
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "") || "birthday-star";
+  }
+
+  function showEggToast(message) {
+    let toast = document.querySelector(".egg-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "egg-toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    if (eggToastTimer) {
+      window.clearTimeout(eggToastTimer);
+    }
+    eggToastTimer = window.setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2800);
+  }
+
+  function initEasterEggs(options) {
+    const settings = {
+      messages: [
+        "Inside joke unlocked.",
+        "Secret found."
+      ],
+      symbols: ["\u2665", "\u2605"],
+      count: 4,
+      ...options
+    };
+
+    const oldLayer = document.querySelector(".egg-layer");
+    if (oldLayer) {
+      oldLayer.remove();
+    }
+
+    if (!Array.isArray(settings.messages) || settings.messages.length === 0) {
+      return null;
+    }
+
+    const layer = document.createElement("div");
+    layer.className = "egg-layer";
+    document.body.appendChild(layer);
+
+    const total = Math.max(1, Math.min(settings.count, settings.messages.length));
+    let found = 0;
+
+    for (let i = 0; i < total; i += 1) {
+      const egg = document.createElement("button");
+      egg.type = "button";
+      egg.className = "easter-egg";
+      egg.innerHTML = settings.symbols[i % settings.symbols.length];
+      egg.setAttribute("aria-label", `Hidden message ${i + 1}`);
+      egg.style.left = `${8 + Math.random() * 82}%`;
+      egg.style.top = `${10 + Math.random() * 74}%`;
+      egg.dataset.found = "no";
+
+      egg.addEventListener("click", () => {
+        if (egg.dataset.found === "yes") {
+          return;
+        }
+        egg.dataset.found = "yes";
+        egg.classList.add("found");
+        found += 1;
+        const message = settings.messages[i] || "Secret found.";
+        showEggToast(message);
+        burstConfetti({ count: 24, x: 10 + Math.random() * 80, y: 20 + Math.random() * 50 });
+
+        if (found === total) {
+          window.setTimeout(() => {
+            showEggToast("All hidden secrets found. You are officially adorable.");
+          }, 520);
+        }
+      });
+
+      layer.appendChild(egg);
+    }
+
+    return layer;
   }
 
   function updateMusicButton() {
@@ -292,6 +373,7 @@
     createFloatingLayer,
     createFileSlug,
     getRecipientName,
+    initEasterEggs,
     navigate,
     pauseMusicForVoiceNote,
     resumeMusicAfterVoiceNote,

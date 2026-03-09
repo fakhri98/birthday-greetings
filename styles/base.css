@@ -194,6 +194,72 @@ p {
   cursor: not-allowed;
 }
 
+.egg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 34;
+  pointer-events: none;
+}
+
+.easter-egg {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  color: rgba(106, 70, 79, 0.34);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(70, 38, 44, 0.12);
+  transform: scale(0.85);
+  opacity: 0.28;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 180ms ease, opacity 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.easter-egg:hover,
+.easter-egg:focus-visible {
+  opacity: 0.88;
+  transform: scale(1);
+  color: #78414d;
+  background: rgba(255, 255, 255, 0.72);
+  outline: none;
+}
+
+.easter-egg.found {
+  opacity: 1;
+  color: #fff;
+  background: linear-gradient(135deg, #ff7f66, #ffbf76);
+}
+
+.egg-toast {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  max-width: min(360px, 90vw);
+  z-index: 45;
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #6a3f49;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 130, 112, 0.35);
+  box-shadow: 0 10px 24px rgba(88, 52, 61, 0.2);
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.egg-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .floating-layer {
   position: fixed;
   inset: 0;
@@ -268,5 +334,12 @@ p {
     bottom: 12px;
     font-size: 0.82rem;
     padding: 9px 12px;
+  }
+
+  .egg-toast {
+    left: 12px;
+    right: 12px;
+    top: 12px;
+    max-width: none;
   }
 }
