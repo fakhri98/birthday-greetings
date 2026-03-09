@@ -3,10 +3,37 @@
   const MUSIC_PREF_KEY = "birthday_greetings_music_enabled";
   const MUSIC_SRC = "assets/audio/invisible-string-instrumental.mp3";
 
-  let musicEnabled = window.localStorage.getItem(MUSIC_PREF_KEY) === "on";
+  function storageGet(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function storageRemove(key) {
+    try {
+      window.localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  let musicEnabled = storageGet(MUSIC_PREF_KEY) === "on";
   let musicAudio = null;
   let musicButton = null;
   let musicReady = false;
+  let musicErrored = false;
   let musicTempPauseDepth = 0;
   let shouldResumeAfterTempPause = false;
   let waitingForInteraction = false;
@@ -90,15 +117,15 @@
   function setRecipientName(value) {
     const clean = sanitizeName(value);
     if (!clean) {
-      window.localStorage.removeItem(RECIPIENT_KEY);
+      storageRemove(RECIPIENT_KEY);
       return "";
     }
-    window.localStorage.setItem(RECIPIENT_KEY, clean);
+    storageSet(RECIPIENT_KEY, clean);
     return clean;
   }
 
   function getRecipientName(fallback) {
-    const stored = window.localStorage.getItem(RECIPIENT_KEY);
+    const stored = storageGet(RECIPIENT_KEY);
     const clean = sanitizeName(stored);
     return clean || fallback || "Birthday Star";
   }
@@ -115,7 +142,7 @@
       return;
     }
 
-    if (!musicReady) {
+    if (musicErrored) {
       musicButton.textContent = "Music unavailable";
       musicButton.disabled = true;
       musicButton.classList.remove("is-on");
@@ -131,7 +158,7 @@
   }
 
   function rememberMusicPreference() {
-    window.localStorage.setItem(MUSIC_PREF_KEY, musicEnabled ? "on" : "off");
+    storageSet(MUSIC_PREF_KEY, musicEnabled ? "on" : "off");
   }
 
   function tryPlayMusic() {
@@ -179,7 +206,7 @@
   }
 
   function pauseMusicForVoiceNote() {
-    if (!musicAudio || !musicReady) {
+    if (!musicAudio || !musicReady || musicErrored) {
       return false;
     }
 
@@ -194,7 +221,7 @@
   }
 
   function resumeMusicAfterVoiceNote() {
-    if (!musicAudio || !musicReady || musicTempPauseDepth === 0) {
+    if (!musicAudio || !musicReady || musicErrored || musicTempPauseDepth === 0) {
       return;
     }
 
@@ -226,8 +253,18 @@
     document.body.appendChild(musicAudio);
     document.body.appendChild(musicButton);
 
-    musicAudio.addEventListener("canplaythrough", () => {
+    musicAudio.addEventListener("canplay", () => {
       musicReady = true;
+      musicErrored = false;
+      updateMusicButton();
+      if (musicEnabled) {
+        tryPlayMusic();
+      }
+    });
+
+    musicAudio.addEventListener("loadeddata", () => {
+      musicReady = true;
+      musicErrored = false;
       updateMusicButton();
       if (musicEnabled) {
         tryPlayMusic();
@@ -236,9 +273,11 @@
 
     musicAudio.addEventListener("error", () => {
       musicReady = false;
+      musicErrored = true;
       updateMusicButton();
     });
 
+    musicAudio.load();
     updateMusicButton();
   }
 

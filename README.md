@@ -29,6 +29,7 @@ Because this is a static site, you can open `index.html` directly in a browser.
 - Replace placeholder memory images in `assets/memories/`.
 - Add your background song file at:
   - `assets/audio/invisible-string-instrumental.mp3`
+  - On GitHub Pages this filename/path is case-sensitive, so keep it exact.
 - Edit text content in:
   - `scripts/memory-lane.js`
   - `scripts/letter.js`
