@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Letter</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/letter.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="glass-card letter-header">
+      <p class="step-tag">Step 4 of 4</p>
+      <h1>A Note Just For You</h1>
+    </section>
+
+    <section class="glass-card letter-card">
+      <pre id="typedLetter" class="typed-letter"></pre>
+      <button id="openFinal" class="btn" disabled>Open Final Surprise</button>
+    </section>
+
+    <section class="link-row">
+      <button id="backCake" class="btn secondary">Back</button>
+      <button id="restart" class="btn secondary">Restart Story</button>
+    </section>
+  </main>
+
+  <div id="finalModal" class="final-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="final-card">
+      <button id="closeFinal" class="close-button" aria-label="Close">x</button>
+      <h2>Your Playlist Gift</h2>
+      <p>Pick a track and dedicate it with your own message.</p>
+      <ul id="playlist" class="playlist"></ul>
+    </div>
+  </div>
+
+  <script src="scripts/common.js"></script>
+  <script src="scripts/letter.js"></script>
+</body>
+</html>

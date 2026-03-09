@@ -1,0 +1,147 @@
+.letter-header {
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.letter-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.letter-card {
+  padding: 22px;
+}
+
+.typed-letter {
+  margin: 0 0 18px;
+  white-space: pre-wrap;
+  min-height: 290px;
+  font-family: "Nunito", Arial, sans-serif;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  color: #4f3640;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  padding: 16px;
+}
+
+#openFinal[disabled] {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.final-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(48, 31, 37, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+  z-index: 30;
+}
+
+.final-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.final-card {
+  width: min(620px, 94vw);
+  background: #fff8f2;
+  border-radius: 22px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 16px 36px rgba(66, 37, 40, 0.25);
+}
+
+.final-card h2 {
+  margin-bottom: 8px;
+}
+
+.final-card > p {
+  color: #6b515a;
+  margin-bottom: 14px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #734b56;
+  cursor: pointer;
+}
+
+.playlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.playlist-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 193, 172, 0.46);
+}
+
+.playlist-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #7f4450;
+  background: #ffe2d7;
+}
+
+.playlist-title {
+  margin: 0;
+  font-size: 0.99rem;
+  color: #5b3c46;
+}
+
+.playlist-note {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #7e646c;
+}
+
+.playlist-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #7a3d49;
+  background: #ffeede;
+}
+
+@media (max-width: 760px) {
+  .typed-letter {
+    min-height: 330px;
+    font-size: 1rem;
+  }
+
+  .playlist-item {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .playlist-number {
+    margin-bottom: 4px;
+  }
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Cake</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/cake.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="glass-card cake-header">
+      <p class="step-tag">Step 3 of 4</p>
+      <h1>Make A Birthday Wish</h1>
+      <p>Click each candle flame to blow it out. Bonus shortcut: press <code>B</code>.</p>
+    </section>
+
+    <section class="glass-card cake-stage">
+      <div class="cake-wrap">
+        <div class="candle-row">
+          <button class="candle" aria-label="Candle 1">
+            <span class="flame"></span>
+            <span class="smoke"></span>
+          </button>
+          <button class="candle" aria-label="Candle 2">
+            <span class="flame"></span>
+            <span class="smoke"></span>
+          </button>
+          <button class="candle" aria-label="Candle 3">
+            <span class="flame"></span>
+            <span class="smoke"></span>
+          </button>
+          <button class="candle" aria-label="Candle 4">
+            <span class="flame"></span>
+            <span class="smoke"></span>
+          </button>
+          <button class="candle" aria-label="Candle 5">
+            <span class="flame"></span>
+            <span class="smoke"></span>
+          </button>
+        </div>
+        <div class="cake-top"></div>
+        <div class="cake-layer"></div>
+        <div class="cake-base"></div>
+      </div>
+      <p id="cakeHint" class="cake-hint">Candles blown: 0 / 5</p>
+    </section>
+
+    <section class="link-row">
+      <button id="backMemories" class="btn secondary">Back</button>
+      <button id="nextLetter" class="btn">Final Page</button>
+    </section>
+  </main>
+
+  <div id="wishModal" class="wish-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="wish-card">
+      <h2>Wish Unlocked</h2>
+      <p>May this year bring you loud laughter, calm days, and everything you secretly wished for.</p>
+      <button id="closeWish" class="btn">Continue</button>
+    </div>
+  </div>
+
+  <script src="scripts/common.js"></script>
+  <script src="scripts/cake.js"></script>
+</body>
+</html>

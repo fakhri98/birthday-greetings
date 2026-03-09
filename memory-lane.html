@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Lane</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/memory-lane.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="glass-card memory-header">
+      <p class="step-tag">Step 2 of 4</p>
+      <h1>Memory Lane</h1>
+      <p>
+        A quick rewind of our favorite moments. You can autoplay the cards or
+        flip through one by one.
+      </p>
+    </section>
+
+    <section class="glass-card memory-section">
+      <div class="memory-controls">
+        <button id="prevMemory" class="btn secondary">Prev Memory</button>
+        <button id="autoPlay" class="btn">Start Slideshow</button>
+        <button id="pausePlay" class="btn secondary hidden">Pause</button>
+        <button id="nextMemory" class="btn secondary">Next Memory</button>
+      </div>
+
+      <div id="memoryTrack" class="memory-track" aria-live="polite"></div>
+    </section>
+
+    <section class="link-row">
+      <button id="backHome" class="btn secondary">Back</button>
+      <button id="nextScene" class="btn">Next Surprise</button>
+    </section>
+  </main>
+
+  <script src="scripts/common.js"></script>
+  <script src="scripts/memory-lane.js"></script>
+</body>
+</html>
