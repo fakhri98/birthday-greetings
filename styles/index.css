@@ -30,6 +30,42 @@
   font-size: 1.02rem;
 }
 
+.name-capture {
+  margin: 0 0 20px;
+  max-width: 360px;
+}
+
+.name-capture label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #7c4b56;
+  letter-spacing: 0.02em;
+}
+
+.name-input {
+  width: 100%;
+  border: 1px solid rgba(255, 120, 103, 0.35);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font: inherit;
+  color: #4f3640;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.name-input:focus {
+  outline: 3px solid rgba(255, 111, 97, 0.22);
+  outline-offset: 1px;
+}
+
+.name-help {
+  margin-top: 7px;
+  color: #7a626a;
+  font-size: 0.88rem;
+}
+
 .info-card {
   align-self: end;
 }

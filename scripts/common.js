@@ -1,4 +1,6 @@
 (function () {
+  const RECIPIENT_KEY = "birthday_greetings_recipient";
+
   function randomBetween(min, max) {
     return Math.random() * (max - min) + min;
   }
@@ -68,9 +70,43 @@
     window.location.href = path;
   }
 
+  function sanitizeName(value) {
+    return (value || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 36);
+  }
+
+  function setRecipientName(value) {
+    const clean = sanitizeName(value);
+    if (!clean) {
+      window.localStorage.removeItem(RECIPIENT_KEY);
+      return "";
+    }
+    window.localStorage.setItem(RECIPIENT_KEY, clean);
+    return clean;
+  }
+
+  function getRecipientName(fallback) {
+    const stored = window.localStorage.getItem(RECIPIENT_KEY);
+    const clean = sanitizeName(stored);
+    return clean || fallback || "Birthday Star";
+  }
+
+  function createFileSlug(value) {
+    return sanitizeName(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "birthday-star";
+  }
+
   window.BirthdayApp = {
     burstConfetti,
     createFloatingLayer,
-    navigate
+    createFileSlug,
+    getRecipientName,
+    navigate,
+    sanitizeName,
+    setRecipientName
   };
 })();

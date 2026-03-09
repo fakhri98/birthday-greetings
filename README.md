@@ -5,9 +5,9 @@ A 4-page romantic birthday website inspired by the YouTube tutorial you shared.
 ## Pages
 
 - `index.html` - welcome page
-- `memory-lane.html` - memory slideshow/cards
-- `cake.html` - interactive candle blow-out cake
-- `letter.html` - typewriter letter + final playlist modal
+- `memory-lane.html` - memory slideshow/cards + voice-note playback
+- `cake.html` - interactive candle blow-out cake + microphone blow detection
+- `letter.html` - typewriter letter + final playlist modal + keepsake image download
 
 ## Run Locally
 
@@ -31,3 +31,4 @@ Because this is a static site, you can open `index.html` directly in a browser.
   - `scripts/memory-lane.js`
   - `scripts/letter.js`
 - Adjust colors and fonts in `styles/base.css`.
+- Personalization name is stored in localStorage key: `birthday_greetings_recipient`.

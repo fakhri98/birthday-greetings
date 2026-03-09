@@ -116,6 +116,23 @@
   color: #704956;
 }
 
+.mic-controls {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.mic-status {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #6f545d;
+}
+
+#toggleMic.is-live {
+  color: #fff;
+  background: linear-gradient(135deg, #ff7f66, #ffbe74);
+  border: none;
+}
+
 .spark {
   position: fixed;
   width: 6px;

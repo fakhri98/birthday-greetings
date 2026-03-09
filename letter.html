@@ -11,12 +11,16 @@
   <main class="page-shell">
     <section class="glass-card letter-header">
       <p class="step-tag">Step 4 of 4</p>
-      <h1>A Note Just For You</h1>
+      <h1 id="letterHeading">A Note Just For You</h1>
     </section>
 
     <section class="glass-card letter-card">
       <pre id="typedLetter" class="typed-letter"></pre>
-      <button id="openFinal" class="btn" disabled>Open Final Surprise</button>
+      <div class="letter-actions">
+        <button id="openFinal" class="btn" disabled>Open Final Surprise</button>
+        <button id="downloadKeepsake" class="btn secondary" disabled>Download Keepsake</button>
+      </div>
+      <p id="keepsakeStatus" class="keepsake-status">Keepsake will unlock when the letter finishes typing.</p>
     </section>
 
     <section class="link-row">
@@ -28,7 +32,7 @@
   <div id="finalModal" class="final-modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="final-card">
       <button id="closeFinal" class="close-button" aria-label="Close">x</button>
-      <h2>Your Playlist Gift</h2>
+      <h2 id="finalTitle">Your Playlist Gift</h2>
       <p>Pick a track and dedicate it with your own message.</p>
       <ul id="playlist" class="playlist"></ul>
     </div>

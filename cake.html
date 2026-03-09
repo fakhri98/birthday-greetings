@@ -11,8 +11,8 @@
   <main class="page-shell">
     <section class="glass-card cake-header">
       <p class="step-tag">Step 3 of 4</p>
-      <h1>Make A Birthday Wish</h1>
-      <p>Click each candle flame to blow it out. Bonus shortcut: press <code>B</code>.</p>
+      <h1 id="cakeHeading">Make A Birthday Wish</h1>
+      <p>Click each candle flame to blow it out. Bonus shortcut: press <code>B</code> or use microphone mode.</p>
     </section>
 
     <section class="glass-card cake-stage">
@@ -44,6 +44,10 @@
         <div class="cake-base"></div>
       </div>
       <p id="cakeHint" class="cake-hint">Candles blown: 0 / 5</p>
+      <div class="mic-controls">
+        <button id="toggleMic" class="btn secondary" type="button">Enable Blow Detection</button>
+        <p id="micStatus" class="mic-status">Allow microphone access, then blow near your mic to extinguish candles.</p>
+      </div>
     </section>
 
     <section class="link-row">
@@ -55,7 +59,7 @@
   <div id="wishModal" class="wish-modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="wish-card">
       <h2>Wish Unlocked</h2>
-      <p>May this year bring you loud laughter, calm days, and everything you secretly wished for.</p>
+      <p id="wishText">May this year bring you loud laughter, calm days, and everything you secretly wished for.</p>
       <button id="closeWish" class="btn">Continue</button>
     </div>
   </div>

@@ -11,11 +11,23 @@
   <main class="page-shell hero-layout">
     <section class="glass-card hero-card">
       <p class="step-tag">Step 1 of 4</p>
-      <h1>Happy Birthday, My Favorite Human</h1>
+      <h1>Happy Birthday, <span id="recipientHeading">My Favorite Human</span></h1>
       <p class="hero-subtext">
         I made you a tiny digital adventure. Each page unlocks one more surprise.
         Ready to start?
       </p>
+      <div class="name-capture">
+        <label for="recipientName">Her Name or Nickname</label>
+        <input
+          id="recipientName"
+          class="name-input"
+          type="text"
+          maxlength="36"
+          autocomplete="name"
+          placeholder="Type her name here"
+        >
+        <p class="name-help">This will personalize every page of the surprise.</p>
+      </div>
       <button id="startSurprise" class="btn">Start The Surprise</button>
     </section>
 
