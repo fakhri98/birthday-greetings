@@ -22,7 +22,7 @@
 .cake-wrap {
   position: relative;
   width: min(380px, 92%);
-  margin: 28px auto 12px;
+  margin: 76px auto 16px;
 }
 
 .cake-top {
@@ -214,6 +214,10 @@
 @media (max-width: 760px) {
   .cake-stage {
     min-height: 360px;
+  }
+
+  .cake-wrap {
+    margin: 62px auto 14px;
   }
 
   .candle-row {

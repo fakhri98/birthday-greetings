@@ -83,7 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
     createFloatingLayer,
     getRecipientName,
     initEasterEggs,
-    navigate
+    navigate,
+    resetEasterEggProgress
   } = window.BirthdayApp;
   const recipientName = getRecipientName("Birthday Star");
   const letterText = buildLetterText(recipientName);
@@ -96,6 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initEasterEggs({
     count: 4,
+    scope: "story",
+    globalTotal: 14,
     symbols: ["\u2605", "\u2665"],
     messages: [
       "Easter egg: You are still the best chapter in my story.",
@@ -362,7 +365,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   backCakeButton.addEventListener("click", () => navigate("cake.html"));
-  restartButton.addEventListener("click", () => navigate("index.html"));
+  restartButton.addEventListener("click", () => {
+    resetEasterEggProgress("story");
+    navigate("index.html");
+  });
 
   renderPlaylist();
   writeLetter(letterText, 22);

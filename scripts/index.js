@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initEasterEggs({
     count: 3,
+    scope: "story",
+    globalTotal: 14,
     symbols: ["\u2665", "\u2605"],
     messages: [
       "Secret: This whole site was made with love.",

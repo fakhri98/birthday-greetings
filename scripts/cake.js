@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initEasterEggs({
     count: 3,
+    scope: "story",
+    globalTotal: 14,
     symbols: ["\u2605", "\u2665"],
     messages: [
       "Cake secret: You can still blow candles by pressing B.",

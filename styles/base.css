@@ -194,11 +194,59 @@ p {
   cursor: not-allowed;
 }
 
+.egg-reset-toggle {
+  position: fixed;
+  left: 16px;
+  bottom: 64px;
+  z-index: 40;
+  border: 1px solid rgba(255, 120, 103, 0.35);
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #7b3e4a;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 18px rgba(93, 57, 66, 0.14);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.egg-reset-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(93, 57, 66, 0.2);
+}
+
+.egg-reset-toggle:focus-visible {
+  outline: 3px solid rgba(255, 110, 97, 0.35);
+  outline-offset: 2px;
+}
+
 .egg-layer {
   position: fixed;
   inset: 0;
   z-index: 34;
   pointer-events: none;
+}
+
+.egg-counter {
+  position: fixed;
+  right: 16px;
+  bottom: 18px;
+  z-index: 41;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #7a4450;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 126, 109, 0.35);
+  box-shadow: 0 10px 20px rgba(84, 52, 61, 0.14);
+}
+
+.egg-counter.is-complete {
+  color: #fff;
+  background: linear-gradient(135deg, #ff7f66, #ffbe74);
+  border-color: transparent;
 }
 
 .easter-egg {
@@ -244,20 +292,42 @@ p {
   border-radius: 14px;
   padding: 11px 14px;
   font-size: 0.92rem;
-  font-weight: 700;
   color: #6a3f49;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(255, 130, 112, 0.35);
   box-shadow: 0 10px 24px rgba(88, 52, 61, 0.2);
   opacity: 0;
   transform: translateY(-10px);
   pointer-events: none;
   transition: opacity 160ms ease, transform 160ms ease;
+  display: grid;
+  gap: 3px;
 }
 
 .egg-toast.show {
   opacity: 1;
   transform: translateY(0);
+  animation: egg-toast-pop 260ms ease-out;
+}
+
+.egg-toast-title {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #7a3f4b;
+}
+
+.egg-toast-body {
+  font-weight: 700;
+  color: #6a5159;
+}
+
+@keyframes egg-toast-pop {
+  0% {
+    transform: translateY(-8px) scale(0.98);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
 }
 
 .floating-layer {
@@ -336,10 +406,22 @@ p {
     padding: 9px 12px;
   }
 
+  .egg-reset-toggle {
+    left: 12px;
+    bottom: 56px;
+    font-size: 0.76rem;
+    padding: 8px 11px;
+  }
+
   .egg-toast {
     left: 12px;
     right: 12px;
     top: 12px;
     max-width: none;
+  }
+
+  .egg-counter {
+    right: 12px;
+    bottom: 60px;
   }
 }

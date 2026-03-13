@@ -90,9 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initEasterEggs({
     count: 4,
+    scope: "story",
+    globalTotal: 14,
     symbols: ["\u2665", "\u2605"],
     messages: [
-      "Secret 1: You looked amazing in that sunset light.",
+      "Secret 1: You looked amazing in that beautiful graduation dress.",
       "Secret 2: Cafe Story still makes me laugh randomly.",
       "Secret 3: Road trip playlist was perfect because of you.",
       `Secret 4: ${recipientName}, you are my favorite memory in every timeline.`
