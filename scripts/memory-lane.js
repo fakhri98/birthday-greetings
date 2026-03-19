@@ -3,49 +3,49 @@ const memories = [
     title: "Sunset Walk",
     caption: "You turned a random evening into a perfect memory.",
     voiceNote: "{name}, this one is my favorite because you made a normal sunset feel magical.",
-    image: "assets/memories/memory-1.svg"
+    image: "assets/memories/memory-1.jpg"
   },
   {
     title: "Cafe Story",
     caption: "The place where we laughed until everyone stared at us.",
     voiceNote: "I still remember how contagious your laugh was that day, {name}.",
-    image: "assets/memories/memory-2.svg"
+    image: "assets/memories/memory-2.jpg"
   },
   {
     title: "Road Trip",
     caption: "No plan, loud songs, and the best wrong turns ever.",
     voiceNote: "{name}, we should absolutely do another unplanned road trip soon.",
-    image: "assets/memories/memory-3.svg"
+    image: "assets/memories/memory-3.jpg"
   },
   {
     title: "Movie Night",
     caption: "Blankets, snacks, and you claiming every good pillow.",
     voiceNote: "You called this a movie night, but I call it elite comfort strategy.",
-    image: "assets/memories/memory-4.svg"
+    image: "assets/memories/memory-4.jpg"
   },
   {
     title: "Rainy Day",
     caption: "We stayed in, made tea, and watched the storm pass.",
     voiceNote: "{name}, quiet moments like this are why I feel lucky to know you.",
-    image: "assets/memories/memory-5.svg"
+    image: "assets/memories/memory-5.jpg"
   },
   {
     title: "Little Wins",
     caption: "You always celebrate my small victories like big ones.",
     voiceNote: "Thank you for cheering me on, even on my most ordinary days.",
-    image: "assets/memories/memory-6.svg"
+    image: "assets/memories/memory-6.jpg"
   },
   {
     title: "Birthday Eve",
     caption: "You smiled at midnight like it was a movie scene.",
     voiceNote: "{name}, I hope tonight feels as special as you are.",
-    image: "assets/memories/memory-7.svg"
+    image: "assets/memories/memory-7.jpg"
   },
   {
     title: "Today",
     caption: "Another year of you, and that is the best gift.",
     voiceNote: "Happy birthday, {name}. You mean more than words can say.",
-    image: "assets/memories/memory-8.svg"
+    image: "assets/memories/memory-8.jpeg"
   }
 ];
 
