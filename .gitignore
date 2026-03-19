@@ -1,6 +1,14 @@
 # Private media and user-provided files
 /assets/*
 !/assets/videos/
+!/assets/memories/
 /assets/videos/*
 !/assets/videos/*.mp4
 !/assets/videos/README.txt
+/assets/memories/*
+!/assets/memories/*.jpg
+!/assets/memories/*.jpeg
+!/assets/memories/*.png
+!/assets/memories/*.webp
+!/assets/memories/*.JPG
+!/assets/memories/*.svg
