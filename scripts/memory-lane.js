@@ -26,7 +26,7 @@ const memories = [
   {
     title: "Trunk Moment",
     caption: "This quiet moment in the park trunk was one of my favorites.",
-    voiceNote: "{name}, I love how we can find magic in the simplest moments together.",
+    voiceNote: "{name}, I love how you so excited about elephant. Soon I will take you to Way Kambas to see real ones in person.",
     image: "assets/memories/memory-5.jpg"
   },
   {
@@ -37,7 +37,7 @@ const memories = [
   },
   {
     title: "First Date",
-    caption: "This place was our first date spot, and it will always be special to me.",
+    caption: "This place was our first date going out, and it will always be special to me.",
     voiceNote: "{name}, I'm so glad we took that first step together.",
     image: "assets/memories/memory-7.jpg"
   },
@@ -52,8 +52,8 @@ const memories = [
 const quizQuestions = [
   {
     question: "What place we went to for our first date?",
-    options: ["Kedai Kita Sentul", "PIM Mall", "Margo City Mall"],
-    answerIndex: 1,
+    options: ["Margo City Mall", "PIM Mall", "Kedai Kita Sentul"],
+    answerIndex: 0,
     success: "Correct. Unlock 1: confetti burst activated."
   },
   {
@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     symbols: ["\u2665", "\u2605"],
     messages: [
       "Secret 1: You looked amazing in that beautiful graduation dress.",
-      "Secret 2: Cafe Story still makes me laugh randomly.",
-      "Secret 3: Road trip playlist was perfect because of you.",
+      "Secret 2: When I first confessed, I was so nervous but you made it feel like the most natural thing in the world.",
+      "Secret 3: That day in the park trunk, just being there with you felt like the most magical adventure.",
       `Secret 4: ${recipientName}, you are my favorite memory in every timeline.`
     ]
   });

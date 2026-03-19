@@ -1,9 +1,9 @@
 const playlist = [
-  { title: "Midnight Smile", note: "For your calm and bright energy" },
-  { title: "Golden Hour", note: "For all our sunset memories" },
-  { title: "Long Drive Loops", note: "For every road trip playlist" },
-  { title: "Soft Rain Session", note: "For peaceful rainy afternoons" },
-  { title: "Birthday Theme", note: "For today, obviously" }
+  { title: "Daylight by Taylor Swift", note: "For your calm and bright energy" },
+  { title: "Invisible String by Taylor Swift", note: "For the connection that brought us together" },
+  // { title: "you! by LANY", note: "For every road trip playlist" },
+  { title: "free love by HONNE", note: "For the love that sets us free" },
+  { title: "Penjaga Hati by Nadhif Basalamah", note: "For the protector of my heart" }
 ];
 
 function buildLetterText(name) {
@@ -13,7 +13,7 @@ Happy Birthday! Another year has gone by, and it’s honestly just another remin
 
 Looking back, it’s so cool to think about the "invisible string" that brought us together. Thank you for all the laughs, your endless patience, and for just being you. You make my life feel so much lighter.
 
-I’m so excited for everything coming up for us. With our wedding just around the corner, I can’t wait for all our big moments ahead. I’m so grateful that we found each other, and my biggest prayer is that we stay side-by-side until Jannah.
+As we step into this new year, my heart is so full thinking about the big moments ahead of us. With our wedding on the horizon, I am endlessly grateful that fate pulled us together. My deepest prayer is that this golden thread keeps us tightly woven together, hand in hand through this life, and all the way to Jannah.
 
 I hope this year brings you:
 - Amazing surprises as we get ready for our big day,
