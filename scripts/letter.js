@@ -9,21 +9,24 @@ const playlist = [
 function buildLetterText(name) {
   return `Dear ${name},
 
-Another year, another reminder of how lucky people are to know you.
-You bring warmth into rooms, calm into chaos, and joy into ordinary days.
+Happy Birthday! Another year has gone by, and it’s honestly just another reminder of how lucky I am to have you. I love how you bring so much warmth into a room and make even the most "ordinary" days feel special.
 
-Thank you for the laughs, the patience, and the way you show up for everyone
-without making a big deal about it. You make life feel lighter.
+Looking back, it’s so cool to think about the "invisible string" that brought us together. Thank you for all the laughs, your endless patience, and for just being you. You make my life feel so much lighter.
 
-I hope this year gives back to you:
-- more peace,
-- bigger wins,
-- and moments that feel exactly like home.
+I’m so excited for everything coming up for us. With our wedding just around the corner, I can’t wait for all our big moments ahead. I’m so grateful that we found each other, and my biggest prayer is that we stay side-by-side until Jannah.
+
+I hope this year brings you:
+- Amazing surprises as we get ready for our big day,
+- Gold moments that turn into the best memories,
+- And a sense of peace that feels like home.
+
+You deserve the kind of happiness that never ends.
 
 Happy Birthday, ${name}. You deserve the kind of happiness that keeps surprising you.
 
-With love,
-Someone who is very grateful for you`;
+With all my love,
+
+The one so glad that string pulled me to you`;
 }
 
 function wrapParagraph(ctx, paragraph, maxWidth) {
@@ -62,18 +65,6 @@ function wrapMultilineText(ctx, text, maxWidth) {
     result.pop();
   }
   return result;
-}
-
-function drawContainImage(ctx, imageCanvas, x, y, width, height) {
-  const scale = Math.min(width / imageCanvas.width, height / imageCanvas.height);
-  const drawWidth = imageCanvas.width * scale;
-  const drawHeight = imageCanvas.height * scale;
-  const drawX = x + (width - drawWidth) / 2;
-  const drawY = y + (height - drawHeight) / 2;
-
-  ctx.fillStyle = "#f8f4ee";
-  ctx.fillRect(x, y, width, height);
-  ctx.drawImage(imageCanvas, drawX, drawY, drawWidth, drawHeight);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -130,11 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const restartButton = document.getElementById("restart");
   const endingButtons = Array.from(document.querySelectorAll(".ending-btn"));
   const endingMessage = document.getElementById("endingMessage");
-  const capturePolaroidButton = document.getElementById("capturePolaroid");
-  const downloadPolaroidLink = document.getElementById("downloadPolaroid");
-  const polaroidStatus = document.getElementById("polaroidStatus");
-  const polaroidPreview = document.getElementById("polaroidPreview");
-  const polaroidImage = document.getElementById("polaroidImage");
   let pausedMusicForFinalVideo = false;
 
   const endingMessages = {
@@ -315,83 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function capturePolaroid() {
-    if (typeof window.html2canvas !== "function") {
-      polaroidStatus.textContent = "Polaroid capture unavailable: screenshot library failed to load.";
-      return;
-    }
-
-    polaroidStatus.textContent = "Capturing your polaroid...";
-    capturePolaroidButton.disabled = true;
-
-    try {
-      const target = finalModal.classList.contains("show")
-        ? finalModal.querySelector(".final-card")
-        : document.querySelector("main.page-shell");
-
-      const shot = await window.html2canvas(target, {
-        backgroundColor: "#fff8f2",
-        scale: 2,
-        useCORS: true,
-        onclone: (doc) => {
-          const clonedCard = doc.querySelector(".final-card");
-          if (clonedCard) {
-            clonedCard.style.maxHeight = "none";
-            clonedCard.style.overflow = "visible";
-            clonedCard.style.height = "auto";
-            clonedCard.scrollTop = 0;
-          }
-
-          const clonedPreview = doc.getElementById("polaroidPreview");
-          if (clonedPreview) {
-            clonedPreview.style.display = "none";
-          }
-        }
-      });
-
-      const polaroidCanvas = document.createElement("canvas");
-      polaroidCanvas.width = 1080;
-      polaroidCanvas.height = 1320;
-      const ctx = polaroidCanvas.getContext("2d");
-
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, polaroidCanvas.width, polaroidCanvas.height);
-
-      ctx.fillStyle = "#f9f6ef";
-      ctx.fillRect(65, 65, 950, 900);
-      drawContainImage(ctx, shot, 90, 90, 900, 850);
-
-      ctx.fillStyle = "#5c3945";
-      ctx.font = "700 44px Fraunces, Georgia, serif";
-      ctx.fillText(`${recipientName}'s Night`, 90, 1065);
-      ctx.font = "600 32px Nunito, Arial, sans-serif";
-      const dateLabel = new Date().toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      });
-      ctx.fillText(dateLabel, 90, 1110);
-
-      ctx.fillStyle = "rgba(255, 133, 112, 0.16)";
-      ctx.beginPath();
-      ctx.arc(980, 1180, 130, 0, Math.PI * 2);
-      ctx.fill();
-
-      const dataUrl = polaroidCanvas.toDataURL("image/png");
-      polaroidImage.src = dataUrl;
-      polaroidPreview.classList.remove("hidden");
-      downloadPolaroidLink.href = dataUrl;
-      downloadPolaroidLink.download = `${createFileSlug(recipientName)}-polaroid.png`;
-      downloadPolaroidLink.classList.remove("hidden");
-      polaroidStatus.textContent = "Polaroid ready. Download it below.";
-      burstConfetti({ count: 70, x: 65, y: 60 });
-    } catch (error) {
-      polaroidStatus.textContent = "Could not capture screenshot. Try again after opening final modal.";
-    } finally {
-      capturePolaroidButton.disabled = false;
-    }
-  }
-
   openFinalButton.addEventListener("click", () => {
     finalModal.classList.add("show");
     finalModal.setAttribute("aria-hidden", "false");
@@ -450,8 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
       setFinalVideoStatus("Video file not found yet. Add assets/videos/best-moments-romantic.mp4");
     });
   }
-
-  capturePolaroidButton.addEventListener("click", capturePolaroid);
 
   downloadKeepsakeButton.addEventListener("click", () => {
     const canvas = buildKeepsakeCanvas();

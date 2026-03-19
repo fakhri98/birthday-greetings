@@ -51,26 +51,40 @@ const memories = [
 
 const quizQuestions = [
   {
-    question: "Which memory mentions a no-plan adventure?",
-    options: ["Movie Night", "Road Trip", "Little Wins"],
+    question: "What place we went to for our first date?",
+    options: ["Kedai Kita Sentul", "PIM Mall", "Margo City Mall"],
     answerIndex: 1,
     success: "Correct. Unlock 1: confetti burst activated."
   },
   {
-    question: "What food did we eat during our first date?",
+    question: "What food did we eat during our first meeting?",
     options: ["Cake The Harvest", "Bubur Ayam", "Pho"],
     answerIndex: 1,
     success: "Correct. Unlock 2: dreamy aurora overlay activated."
   },
   {
-    question: "What did she claim during movie night?",
-    options: ["All snacks", "Every good pillow", "The playlist remote"],
-    answerIndex: 1,
+    question: "What is the date our parents met?",
+    options: ["17th January 2026", "11th January 2026", "18th January 2026"],
+    answerIndex: 2,
     success: "Correct. Unlock 3: grand celebration mode activated."
   }
 ];
 
 const FUN_VIDEO_UNLOCK_COUNT = 3;
+const dumpPhotos = [
+  { src: "assets/memories/photo-dump-1.jpeg" },
+  { src: "assets/memories/photo-dump-2.jpeg" },
+  { src: "assets/memories/photo-dump-3.jpeg" },
+  { src: "assets/memories/photo-dump-4.jpeg" },
+  { src: "assets/memories/photo-dump-5.jpeg" }
+];
+const DUMP_SLOTS = [
+  { x: 18, y: 24, r: -11 },
+  { x: 44, y: 18, r: 7 },
+  { x: 72, y: 26, r: -6 },
+  { x: 30, y: 56, r: 9 },
+  { x: 60, y: 58, r: -8 }
+];
 
 document.addEventListener("DOMContentLoaded", () => {
   const {
@@ -119,6 +133,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const playFunVideoButton = document.getElementById("playFunVideo");
   const funMomentVideo = document.getElementById("funMomentVideo");
   const chapterChips = Array.from(document.querySelectorAll(".chapter-chip"));
+  const dumpStage = document.getElementById("dumpStage");
+  const dumpStatus = document.getElementById("dumpStatus");
+  const shuffleDumpButton = document.getElementById("shuffleDump");
 
   heading.textContent = `Memory Lane for ${recipientName}`;
 
@@ -129,12 +146,99 @@ document.addEventListener("DOMContentLoaded", () => {
   let pausedMusicForVoice = false;
   let pausedMusicForFunVideo = false;
   let funVideoUnlocked = false;
+  let dumpCards = [];
   let unlockedEffects = 0;
   const solvedQuestions = new Set();
   const viewedMemoryIndexes = new Set();
 
   function withName(text) {
     return text.replaceAll("{name}", recipientName);
+  }
+
+  function randomBetween(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function setDumpStatus(text) {
+    if (dumpStatus) {
+      dumpStatus.textContent = text;
+    }
+  }
+
+  function layoutDumpCards() {
+    if (!dumpCards.length) {
+      return;
+    }
+
+    const slots = DUMP_SLOTS.slice().sort(() => Math.random() - 0.5);
+    dumpCards.forEach((card, index) => {
+      const slot = slots[index % slots.length];
+      const x = Math.max(14, Math.min(84, slot.x + randomBetween(-4.5, 4.5)));
+      const y = Math.max(20, Math.min(78, slot.y + randomBetween(-5, 5)));
+      const rotation = slot.r + randomBetween(-3.5, 3.5);
+      card.style.left = `${x}%`;
+      card.style.top = `${y}%`;
+      card.style.setProperty("--dump-rotation", `${rotation}deg`);
+      card.style.zIndex = String(index + 2);
+      card.classList.remove("is-focus");
+    });
+  }
+
+  function focusDumpCard(index) {
+    if (!dumpCards.length || index < 0 || index >= dumpCards.length) {
+      return;
+    }
+
+    dumpCards.forEach((card, cardIndex) => {
+      const isFocused = cardIndex === index;
+      card.classList.toggle("is-focus", isFocused);
+      if (isFocused) {
+        card.style.zIndex = "80";
+      } else {
+        card.style.zIndex = String(cardIndex + 2);
+      }
+    });
+
+    setDumpStatus(`Spotlight on photo ${index + 1}.`);
+  }
+
+  function renderDumpWall() {
+    if (!dumpStage) {
+      return;
+    }
+
+    const source = dumpPhotos.slice(0, 5);
+    dumpStage.innerHTML = "";
+    dumpCards = [];
+
+    source.forEach((photo, index) => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "dump-card";
+      card.setAttribute("aria-label", `Dump photo ${index + 1}`);
+      card.innerHTML = `
+        <img class="dump-card-image" src="${photo.src}" alt="Photo dump ${index + 1}">
+      `;
+
+      const image = card.querySelector(".dump-card-image");
+      if (image) {
+        image.addEventListener("error", () => {
+          card.classList.add("is-missing");
+          setDumpStatus("One dump photo is missing. Check your file names in assets/memories.");
+        });
+      }
+
+      card.addEventListener("click", () => {
+        focusDumpCard(index);
+        burstConfetti({ count: 24, x: 48 + Math.random() * 12, y: 58 + Math.random() * 12 });
+      });
+
+      dumpCards.push(card);
+      dumpStage.appendChild(card);
+    });
+
+    layoutDumpCards();
+    setDumpStatus(`Loaded ${dumpCards.length} dump photos. Tap one to spotlight.`);
   }
 
   memories.forEach((memory, index) => {
@@ -528,6 +632,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  if (shuffleDumpButton) {
+    shuffleDumpButton.addEventListener("click", () => {
+      layoutDumpCards();
+      setDumpStatus("Shuffled. Pick one photo to spotlight.");
+      burstConfetti({ count: 34, x: 50, y: 66 });
+    });
+  }
+
   backHomeButton.addEventListener("click", () => {
     stopFunVideo();
     stopVoiceNote();
@@ -549,5 +661,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   renderQuiz();
   updateQuizProgress();
+  renderDumpWall();
   scrollToCard(0);
 });

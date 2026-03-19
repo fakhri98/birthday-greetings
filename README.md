@@ -7,7 +7,7 @@ A 4-page romantic birthday website inspired by the YouTube tutorial you shared.
 - `index.html` - welcome page
 - `memory-lane.html` - memory slideshow/cards + voice-note playback + memory quiz
 - `cake.html` - interactive candle blow-out cake + microphone blow detection
-- `letter.html` - typewriter letter + ending choice + polaroid booth + keepsake download
+- `letter.html` - typewriter letter + ending choice + romantic finale video + keepsake download
 
 ## Run Locally
 
