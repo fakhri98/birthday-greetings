@@ -84,6 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
     getRecipientName,
     initEasterEggs,
     navigate,
+    pauseMusicForVoiceNote,
+    resumeMusicAfterVoiceNote,
     resetEasterEggProgress
   } = window.BirthdayApp;
   const recipientName = getRecipientName("Birthday Star");
@@ -117,6 +119,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const finalTitle = document.getElementById("finalTitle");
   const closeFinalButton = document.getElementById("closeFinal");
   const playlistList = document.getElementById("playlist");
+  const finalVideoFeature = document.getElementById("finalVideoFeature");
+  const playFinalVideoButton = document.getElementById("playFinalVideo");
+  const finalMomentVideo = document.getElementById("finalMomentVideo");
+  const finalVideoStatus = document.getElementById("finalVideoStatus");
+  const finalVideoChapterChips = Array.from(
+    finalVideoFeature ? finalVideoFeature.querySelectorAll(".chapter-chip") : []
+  );
   const backCakeButton = document.getElementById("backCake");
   const restartButton = document.getElementById("restart");
   const endingButtons = Array.from(document.querySelectorAll(".ending-btn"));
@@ -126,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const polaroidStatus = document.getElementById("polaroidStatus");
   const polaroidPreview = document.getElementById("polaroidPreview");
   const polaroidImage = document.getElementById("polaroidImage");
+  let pausedMusicForFinalVideo = false;
 
   const endingMessages = {
     romantic: `${recipientName}, every little thing feels better with you in my life.`,
@@ -259,6 +269,52 @@ document.addEventListener("DOMContentLoaded", () => {
     burstConfetti({ count: 30, x: 62, y: 55 });
   }
 
+  function setFinalVideoStatus(text) {
+    if (finalVideoStatus) {
+      finalVideoStatus.textContent = text;
+    }
+  }
+
+  function pauseMusicForFinalVideoIfNeeded() {
+    if (!pausedMusicForFinalVideo) {
+      pausedMusicForFinalVideo = pauseMusicForVoiceNote();
+    }
+  }
+
+  function resumeMusicForFinalVideoIfNeeded() {
+    if (pausedMusicForFinalVideo) {
+      resumeMusicAfterVoiceNote();
+      pausedMusicForFinalVideo = false;
+    }
+  }
+
+  function stopFinalVideo() {
+    if (!finalMomentVideo) {
+      return;
+    }
+    if (!finalMomentVideo.paused) {
+      finalMomentVideo.pause();
+    }
+    resumeMusicForFinalVideoIfNeeded();
+  }
+
+  function playFinalVideo(startTime) {
+    if (!finalMomentVideo || !finalVideoFeature) {
+      return;
+    }
+    finalVideoFeature.classList.add("is-playing");
+    if (Number.isFinite(startTime) && startTime >= 0) {
+      finalMomentVideo.currentTime = startTime;
+    }
+    pauseMusicForFinalVideoIfNeeded();
+    const attempt = finalMomentVideo.play();
+    if (attempt && typeof attempt.catch === "function") {
+      attempt.catch(() => {
+        setFinalVideoStatus("Tap play again to start your story reel.");
+      });
+    }
+  }
+
   async function capturePolaroid() {
     if (typeof window.html2canvas !== "function") {
       polaroidStatus.textContent = "Polaroid capture unavailable: screenshot library failed to load.";
@@ -339,10 +395,15 @@ document.addEventListener("DOMContentLoaded", () => {
   openFinalButton.addEventListener("click", () => {
     finalModal.classList.add("show");
     finalModal.setAttribute("aria-hidden", "false");
+    setFinalVideoStatus("Press play for the romantic finale.");
     burstConfetti({ count: 120, x: 50, y: 52 });
   });
 
   closeFinalButton.addEventListener("click", () => {
+    stopFinalVideo();
+    if (finalVideoFeature) {
+      finalVideoFeature.classList.remove("is-playing");
+    }
     finalModal.classList.remove("show");
     finalModal.setAttribute("aria-hidden", "true");
   });
@@ -352,6 +413,43 @@ document.addEventListener("DOMContentLoaded", () => {
       setEnding(button.dataset.ending);
     });
   });
+
+  if (playFinalVideoButton) {
+    playFinalVideoButton.addEventListener("click", () => {
+      playFinalVideo();
+    });
+  }
+
+  finalVideoChapterChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const startTime = Number(chip.dataset.time || "0");
+      playFinalVideo(startTime);
+    });
+  });
+
+  if (finalMomentVideo) {
+    finalMomentVideo.addEventListener("play", () => {
+      pauseMusicForFinalVideoIfNeeded();
+      setFinalVideoStatus("Playing your story reel.");
+    });
+
+    finalMomentVideo.addEventListener("pause", () => {
+      resumeMusicForFinalVideoIfNeeded();
+      if (!finalMomentVideo.ended) {
+        setFinalVideoStatus("Video paused. Press play to continue.");
+      }
+    });
+
+    finalMomentVideo.addEventListener("ended", () => {
+      resumeMusicForFinalVideoIfNeeded();
+      setFinalVideoStatus("That was beautiful. Replay anytime.");
+      burstConfetti({ count: 140, x: 52, y: 48 });
+    });
+
+    finalMomentVideo.addEventListener("error", () => {
+      setFinalVideoStatus("Video file not found yet. Add assets/videos/best-moments-romantic.mp4");
+    });
+  }
 
   capturePolaroidButton.addEventListener("click", capturePolaroid);
 
@@ -364,11 +462,17 @@ document.addEventListener("DOMContentLoaded", () => {
     keepsakeStatus.textContent = "Keepsake downloaded. You can send it to her.";
   });
 
-  backCakeButton.addEventListener("click", () => navigate("cake.html"));
+  backCakeButton.addEventListener("click", () => {
+    stopFinalVideo();
+    navigate("cake.html");
+  });
   restartButton.addEventListener("click", () => {
+    stopFinalVideo();
     resetEasterEggProgress("story");
     navigate("index.html");
   });
+
+  window.addEventListener("beforeunload", stopFinalVideo);
 
   renderPlaylist();
   writeLetter(letterText, 22);

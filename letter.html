@@ -46,6 +46,27 @@
         <p id="endingMessage" class="ending-message">Pick one to reveal your custom ending message.</p>
       </section>
 
+      <section id="finalVideoFeature" class="final-video-feature">
+        <h3>Our Story Reel</h3>
+        <p class="booth-subtitle">A romantic finale from our best moments together.</p>
+        <div class="video-shell romantic-shell">
+          <button id="playFinalVideo" class="video-cover-btn final-cover-btn" type="button">
+            <span class="video-cover-tag">Final Surprise</span>
+            <span class="video-cover-title">Play Our Story</span>
+          </button>
+          <video id="finalMomentVideo" class="moment-video" controls playsinline preload="metadata">
+            <source src="assets/videos/best-moments-romantic.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="chapter-row" aria-label="Romantic reel chapters">
+          <button type="button" class="chapter-chip" data-target-video="finalMomentVideo" data-time="0">First Glance</button>
+          <button type="button" class="chapter-chip" data-target-video="finalMomentVideo" data-time="10">Best Laugh</button>
+          <button type="button" class="chapter-chip" data-target-video="finalMomentVideo" data-time="22">Forever Mood</button>
+        </div>
+        <p id="finalVideoStatus" class="video-feature-status">Press play for the romantic finale.</p>
+      </section>
+
       <section class="polaroid-booth">
         <h3>Polaroid Booth</h3>
         <p class="booth-subtitle">Capture this final screen with your name and today’s date.</p>

@@ -1,2 +1,6 @@
 # Private media and user-provided files
-/assets/
+/assets/*
+!/assets/videos/
+/assets/videos/*
+!/assets/videos/*.mp4
+!/assets/videos/README.txt

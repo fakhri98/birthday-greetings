@@ -1,51 +1,51 @@
 const memories = [
   {
-    title: "Sunset Walk",
-    caption: "You turned a random evening into a perfect memory.",
-    voiceNote: "{name}, this one is my favorite because you made a normal sunset feel magical.",
+    title: "Graduation Day",
+    caption: "Finally you did it, and I couldn't be prouder.",
+    voiceNote: "{name}, this one is your big moment, after all those years of hard work.",
     image: "assets/memories/memory-1.jpg"
   },
   {
-    title: "Cafe Story",
-    caption: "The place where we laughed until everyone stared at us.",
-    voiceNote: "I still remember how contagious your laugh was that day, {name}.",
+    title: "Photoshoot at Library",
+    caption: "The place where we getting to know each other better.",
+    voiceNote: "I still remember how happy you were that day, even though the photographer is not satisfied enough.",
     image: "assets/memories/memory-2.jpg"
   },
   {
-    title: "Road Trip",
-    caption: "No plan, loud songs, and the best wrong turns ever.",
-    voiceNote: "{name}, we should absolutely do another unplanned road trip soon.",
+    title: "Sushi Time!",
+    caption: "Creating our own sushi rolls for the first time was a hilarious mess.",
+    voiceNote: "{name}, we should absolutely do another sushi-making adventure.",
     image: "assets/memories/memory-3.jpg"
   },
   {
-    title: "Movie Night",
-    caption: "Blankets, snacks, and you claiming every good pillow.",
-    voiceNote: "You called this a movie night, but I call it elite comfort strategy.",
+    title: "Library Date",
+    caption: "This place and that spot is very special to us, isn't it?",
+    voiceNote: "This photo taken after I asked that special question right? haha.",
     image: "assets/memories/memory-4.jpg"
   },
   {
-    title: "Rainy Day",
-    caption: "We stayed in, made tea, and watched the storm pass.",
-    voiceNote: "{name}, quiet moments like this are why I feel lucky to know you.",
+    title: "Trunk Moment",
+    caption: "This quiet moment in the park trunk was one of my favorites.",
+    voiceNote: "{name}, I love how we can find magic in the simplest moments together.",
     image: "assets/memories/memory-5.jpg"
   },
   {
-    title: "Little Wins",
-    caption: "You always celebrate my small victories like big ones.",
-    voiceNote: "Thank you for cheering me on, even on my most ordinary days.",
+    title: "Memorable Moment",
+    caption: "This moment will forever be etched in my heart when our parents are meeting.",
+    voiceNote: "{name}, This was a big step for us, and you handled it with so much grace and warmth.",
     image: "assets/memories/memory-6.jpg"
   },
   {
-    title: "Birthday Eve",
-    caption: "You smiled at midnight like it was a movie scene.",
-    voiceNote: "{name}, I hope tonight feels as special as you are.",
+    title: "First Date",
+    caption: "This place was our first date spot, and it will always be special to me.",
+    voiceNote: "{name}, I'm so glad we took that first step together.",
     image: "assets/memories/memory-7.jpg"
   },
   {
     title: "Today",
     caption: "Another year of you, and that is the best gift.",
     voiceNote: "Happy birthday, {name}. You mean more than words can say.",
-    image: "assets/memories/memory-8.jpeg"
+    image: "assets/memories/memory-8.jpg"
   }
 ];
 
@@ -57,9 +57,9 @@ const quizQuestions = [
     success: "Correct. Unlock 1: confetti burst activated."
   },
   {
-    question: "Where did we laugh until everyone stared?",
-    options: ["Cafe Story", "Rainy Day", "Sunset Walk"],
-    answerIndex: 0,
+    question: "What food did we eat during our first date?",
+    options: ["Cake The Harvest", "Bubur Ayam", "Pho"],
+    answerIndex: 1,
     success: "Correct. Unlock 2: dreamy aurora overlay activated."
   },
   {
@@ -69,6 +69,8 @@ const quizQuestions = [
     success: "Correct. Unlock 3: grand celebration mode activated."
   }
 ];
+
+const FUN_VIDEO_UNLOCK_COUNT = 3;
 
 document.addEventListener("DOMContentLoaded", () => {
   const {
@@ -112,15 +114,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextSceneButton = document.getElementById("nextScene");
   const quizList = document.getElementById("quizList");
   const quizProgress = document.getElementById("quizProgress");
+  const funVideoMoment = document.getElementById("funVideoMoment");
+  const funVideoUnlockHint = document.getElementById("funVideoUnlockHint");
+  const playFunVideoButton = document.getElementById("playFunVideo");
+  const funMomentVideo = document.getElementById("funMomentVideo");
+  const chapterChips = Array.from(document.querySelectorAll(".chapter-chip"));
 
   heading.textContent = `Memory Lane for ${recipientName}`;
 
   let currentIndex = 0;
   let intervalId = null;
+  let trackSyncRafId = null;
   let activeVoiceButton = null;
   let pausedMusicForVoice = false;
+  let pausedMusicForFunVideo = false;
+  let funVideoUnlocked = false;
   let unlockedEffects = 0;
   const solvedQuestions = new Set();
+  const viewedMemoryIndexes = new Set();
 
   function withName(text) {
     return text.replaceAll("{name}", recipientName);
@@ -156,11 +167,93 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function pauseMusicForVideo() {
+    if (!pausedMusicForFunVideo) {
+      pausedMusicForFunVideo = pauseMusicForVoiceNote();
+    }
+  }
+
+  function resumeMusicForVideo() {
+    if (pausedMusicForFunVideo) {
+      resumeMusicAfterVoiceNote();
+      pausedMusicForFunVideo = false;
+    }
+  }
+
+  function stopFunVideo() {
+    if (!funMomentVideo) {
+      return;
+    }
+    if (!funMomentVideo.paused) {
+      funMomentVideo.pause();
+    }
+    resumeMusicForVideo();
+  }
+
+  function setFunVideoHint(text) {
+    if (funVideoUnlockHint) {
+      funVideoUnlockHint.textContent = text;
+    }
+  }
+
+  function updateFunVideoUnlock() {
+    if (!funVideoMoment || !playFunVideoButton) {
+      return;
+    }
+
+    const viewedCount = viewedMemoryIndexes.size;
+    if (!funVideoUnlocked && viewedCount >= FUN_VIDEO_UNLOCK_COUNT) {
+      funVideoUnlocked = true;
+      funVideoMoment.classList.remove("is-locked");
+      funVideoMoment.classList.add("is-unlocked");
+      playFunVideoButton.disabled = false;
+      const coverTag = playFunVideoButton.querySelector(".video-cover-tag");
+      if (coverTag) {
+        coverTag.textContent = "Unlocked";
+      }
+      setFunVideoHint("Unlocked. Press play and enjoy your fun moments reel.");
+      burstConfetti({ count: 90, x: 50, y: 48 });
+      return;
+    }
+
+    if (!funVideoUnlocked) {
+      const safeViewedCount = Math.min(FUN_VIDEO_UNLOCK_COUNT, viewedCount);
+      const remaining = Math.max(0, FUN_VIDEO_UNLOCK_COUNT - viewedCount);
+      const memoryLabel = remaining === 1 ? "memory" : "memories";
+      setFunVideoHint(`Mini reel unlock progress: ${safeViewedCount}/${FUN_VIDEO_UNLOCK_COUNT}. Browse ${remaining} more ${memoryLabel}.`);
+    }
+  }
+
+  function playFunVideo(startTime) {
+    if (!funVideoUnlocked || !funMomentVideo || !funVideoMoment) {
+      setFunVideoHint(`Browse at least ${FUN_VIDEO_UNLOCK_COUNT} memory cards to unlock this mini reel.`);
+      return;
+    }
+
+    stopVoiceNote();
+    pauseSlideshow();
+    funVideoMoment.classList.add("is-playing");
+
+    if (Number.isFinite(startTime) && startTime >= 0) {
+      funMomentVideo.currentTime = startTime;
+    }
+
+    pauseMusicForVideo();
+    const attempt = funMomentVideo.play();
+    if (attempt && typeof attempt.catch === "function") {
+      attempt.catch(() => {
+        setFunVideoHint("Tap play again to start the video.");
+      });
+    }
+  }
+
   function updateActiveCard(index) {
     currentIndex = (index + cards.length) % cards.length;
     cards.forEach((card, cardIndex) => {
       card.classList.toggle("is-active", cardIndex === currentIndex);
     });
+    viewedMemoryIndexes.add(currentIndex);
+    updateFunVideoUnlock();
   }
 
   function scrollToCard(index) {
@@ -179,6 +272,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     track.scrollLeft = clampedLeft;
+  }
+
+  function getClosestCardIndexFromScroll() {
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    cards.forEach((card, index) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - trackCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    return closestIndex;
+  }
+
+  function syncActiveCardFromTrackScroll() {
+    if (!cards.length) {
+      return;
+    }
+    updateActiveCard(getClosestCardIndexFromScroll());
   }
 
   function startSlideshow() {
@@ -234,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    stopFunVideo();
     stopVoiceNote();
     const utterance = new SpeechSynthesisUtterance(note);
     utterance.rate = 0.95;
@@ -362,16 +480,73 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  track.addEventListener("scroll", () => {
+    if (trackSyncRafId) {
+      return;
+    }
+
+    trackSyncRafId = window.requestAnimationFrame(() => {
+      trackSyncRafId = null;
+      syncActiveCardFromTrackScroll();
+    });
+  }, { passive: true });
+
+  if (playFunVideoButton) {
+    playFunVideoButton.addEventListener("click", () => {
+      playFunVideo();
+    });
+  }
+
+  chapterChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const startTime = Number(chip.dataset.time || "0");
+      playFunVideo(startTime);
+    });
+  });
+
+  if (funMomentVideo) {
+    funMomentVideo.addEventListener("play", () => {
+      pauseMusicForVideo();
+      setFunVideoHint("Playing your best moments reel.");
+    });
+
+    funMomentVideo.addEventListener("pause", () => {
+      resumeMusicForVideo();
+      if (!funMomentVideo.ended) {
+        setFunVideoHint("Video paused. Press play any time.");
+      }
+    });
+
+    funMomentVideo.addEventListener("ended", () => {
+      resumeMusicForVideo();
+      setFunVideoHint("Replay it anytime for another smile.");
+      burstConfetti({ count: 80, x: 55, y: 50 });
+    });
+
+    funMomentVideo.addEventListener("error", () => {
+      setFunVideoHint("Video file not found yet. Add assets/videos/best-moments-fun.mp4");
+    });
+  }
+
   backHomeButton.addEventListener("click", () => {
+    stopFunVideo();
     stopVoiceNote();
     navigate("index.html");
   });
   nextSceneButton.addEventListener("click", () => {
+    stopFunVideo();
     stopVoiceNote();
     navigate("cake.html");
   });
 
-  window.addEventListener("beforeunload", stopVoiceNote);
+  window.addEventListener("beforeunload", () => {
+    if (trackSyncRafId) {
+      window.cancelAnimationFrame(trackSyncRafId);
+      trackSyncRafId = null;
+    }
+    stopFunVideo();
+    stopVoiceNote();
+  });
   renderQuiz();
   updateQuizProgress();
   scrollToCard(0);
